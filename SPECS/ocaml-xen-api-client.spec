@@ -1,14 +1,18 @@
 %define debug_package %{nil}
 
 Name:           ocaml-xen-api-client
-Version:        1.3.0
-Release:        4%{?dist}
+Version:        1.7.0
+Release:        1%{?dist}
 Summary:        Ocaml bindings to the Xapi API
 License:        LGPL2.1 + OCaml linking exception
 URL:            https://github.com/xapi-project/xen-api-client/
 
-Source0:        https://code.citrite.net/rest/archive/latest/projects/XSU/repos/xen-api-client/archive?at=v%{version}&format=tar.gz&prefix=xen-api-client-%{version}#/xen-api-client-%{version}.tar.gz
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/xen-api-client/archive?at=v1.3.0&format=tar.gz&prefix=xen-api-client-1.3.0#/xen-api-client-1.3.0.tar.gz) = 7c13fb11e451e1f5cb59b61c1dc6ef8071a4d866
+
+Source0: https://code.citrite.net/rest/archive/latest/projects/XSU/repos/xen-api-client/archive?at=v1.7.0&format=tar.gz&prefix=ocaml-xen-api-client-1.7.0#/xen-api-client-1.7.0.tar.gz
+
+
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/xen-api-client/archive?at=v1.7.0&format=tar.gz&prefix=ocaml-xen-api-client-1.7.0#/xen-api-client-1.7.0.tar.gz) = d0d6fd56749daf06cb7aa674e7785bb41e172aa4
+
 
 BuildRequires:  xs-opam-repo
 BuildRequires:  ocaml-xcp-idl-devel
@@ -24,6 +28,7 @@ OCaml bindings to the Xapi API, include support for concurrent
 client using the lwt and async libraries.
 
 %package        devel
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/xen-api-client/archive?at=v1.7.0&format=tar.gz&prefix=ocaml-xen-api-client-1.7.0#/xen-api-client-1.7.0.tar.gz) = d0d6fd56749daf06cb7aa674e7785bb41e172aa4
 Summary:        Development files for %{name}
 Requires:       %{name} = %{version}-%{release}
 Requires:       xs-opam-repo
@@ -34,7 +39,7 @@ Requires:       xen-dom0-libs-devel
 The %{name}-devel package contains libraries and signature files for
 developing applications that use %{name}.
 
-%global ocaml_dir    /usr/lib/opamroot/system
+%global ocaml_dir    /usr/lib/opamroot/ocaml-system
 %global ocaml_libdir %{ocaml_dir}/lib
 %global ocaml_docdir %{ocaml_dir}/doc
 %global build_ocaml_dir %{buildroot}%{ocaml_dir}
@@ -42,16 +47,13 @@ developing applications that use %{name}.
 %global build_ocaml_docdir %{buildroot}%{ocaml_docdir}
 
 %prep
-%autosetup -p1 -n xen-api-client-%{version}
+%autosetup -p1
 
 %build
 make
 
 %install
-mkdir -p %{buildroot}/%{_bindir}
-mkdir -p %{build_ocaml_libdir}
-mkdir -p %{build_ocaml_docdir}
-make install OPAM_PREFIX=%{build_ocaml_dir} OPAM_LIBDIR=%{build_ocaml_libdir} BINDIR=%{buildroot}%{_bindir}
+make DESTDIR=%{buildroot} install
 
 %files
 %{ocaml_libdir}/xen-api-client/META
@@ -63,10 +65,10 @@ make install OPAM_PREFIX=%{build_ocaml_dir} OPAM_LIBDIR=%{build_ocaml_libdir} BI
 %{ocaml_libdir}/xen-api-client-async/META
 %{ocaml_libdir}/xen-api-client-async/*.cma
 %{ocaml_libdir}/xen-api-client-async/*.cmi
+%exclude %{ocaml_libdir}/xen-api-client/*.dune
 
 %files devel
 %{ocaml_docdir}/xen-api-client
-%exclude %{ocaml_libdir}/xen-api-client/*.dune
 %exclude %{ocaml_libdir}/xen-api-client/*.cmt
 %exclude %{ocaml_libdir}/xen-api-client/*.cmti
 %exclude %{ocaml_libdir}/xen-api-client/opam
@@ -97,6 +99,21 @@ make install OPAM_PREFIX=%{build_ocaml_dir} OPAM_LIBDIR=%{build_ocaml_libdir} BI
 %{ocaml_libdir}/xen-api-client-async/*.ml*
 
 %changelog
+* Wed Jan 23 2019 Christian Lindig <christian.lindig@citrix.com> - 1.7.0-1
+- Prepare for Dune 1.6
+
+* Thu Jan 17 2019 Christian Lindig <christian.lindig@citrix.com> - 1.6.0-1
+- Corrected coverage rewriter.
+
+* Fri Jan 11 2019 Christian Lindig <christian.lindig@citrix.com> - 1.5.0-1
+- Use xapi-rrd; rrd is being deprecated.
+- Moved from jbuilder to dune.
+- Updated opam files.
+
+* Tue Sep 18 2018 Christian Lindig <christian.lindig@citrix.com> - 1.4.0-1
+- Move to dune and fix opam dependencies
+- Update .travis.yml to pin all opam packages in this repo, use OCaml 4.06
+
 * Tue May 29 2018 Christian Lindig <christian.lindig@citrix.com> - 1.3.0-1
 - async: make safe-string compliant
 - lwt: make safe-string compliant

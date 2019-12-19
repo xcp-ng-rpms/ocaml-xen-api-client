@@ -2,7 +2,7 @@
 
 Name:           ocaml-xen-api-client
 Version:        1.7.0
-Release:        1%{?dist}
+Release:        3%{?dist}
 Summary:        Ocaml bindings to the Xapi API
 License:        LGPL2.1 + OCaml linking exception
 URL:            https://github.com/xapi-project/xen-api-client/
@@ -39,7 +39,7 @@ Requires:       xen-dom0-libs-devel
 The %{name}-devel package contains libraries and signature files for
 developing applications that use %{name}.
 
-%global ocaml_dir    /usr/lib/opamroot/ocaml-system
+%global ocaml_dir    %{_opamroot}/ocaml-system
 %global ocaml_libdir %{ocaml_dir}/lib
 %global ocaml_docdir %{ocaml_dir}/doc
 %global build_ocaml_dir %{buildroot}%{ocaml_dir}
@@ -51,6 +51,9 @@ developing applications that use %{name}.
 
 %build
 make
+
+%check
+make test
 
 %install
 make DESTDIR=%{buildroot} install
@@ -65,7 +68,7 @@ make DESTDIR=%{buildroot} install
 %{ocaml_libdir}/xen-api-client-async/META
 %{ocaml_libdir}/xen-api-client-async/*.cma
 %{ocaml_libdir}/xen-api-client-async/*.cmi
-%exclude %{ocaml_libdir}/xen-api-client/*.dune
+%{ocaml_libdir}/xen-api-client*/dune-package
 
 %files devel
 %{ocaml_docdir}/xen-api-client
@@ -77,7 +80,6 @@ make DESTDIR=%{buildroot} install
 %{ocaml_libdir}/xen-api-client/*.cmxs
 %{ocaml_libdir}/xen-api-client/*.cmx
 %{ocaml_libdir}/xen-api-client/*.ml*
-%exclude %{ocaml_libdir}/xen-api-client-lwt/*.dune
 %exclude %{ocaml_libdir}/xen-api-client-lwt/*.cmt
 %exclude %{ocaml_libdir}/xen-api-client-lwt/*.cmti
 %exclude %{ocaml_libdir}/xen-api-client-lwt/opam
@@ -87,7 +89,6 @@ make DESTDIR=%{buildroot} install
 %{ocaml_libdir}/xen-api-client-lwt/*.cmxs
 %{ocaml_libdir}/xen-api-client-lwt/*.cmx
 %{ocaml_libdir}/xen-api-client-lwt/*.ml*
-%exclude %{ocaml_libdir}/xen-api-client-async/*.dune
 %exclude %{ocaml_libdir}/xen-api-client-async/*.cmt
 %exclude %{ocaml_libdir}/xen-api-client-async/*.cmti
 %exclude %{ocaml_libdir}/xen-api-client-async/opam
@@ -99,6 +100,9 @@ make DESTDIR=%{buildroot} install
 %{ocaml_libdir}/xen-api-client-async/*.ml*
 
 %changelog
+* Fri Aug 23 2019 Edwin Török <edvin.torok@citrix.com> - 1.7.0-3
+- bump packages after xs-opam update
+
 * Wed Jan 23 2019 Christian Lindig <christian.lindig@citrix.com> - 1.7.0-1
 - Prepare for Dune 1.6
 

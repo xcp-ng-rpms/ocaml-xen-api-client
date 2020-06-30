@@ -1,17 +1,17 @@
 %define debug_package %{nil}
 
 Name:           ocaml-xen-api-client
-Version:        1.7.0
-Release:        3%{?dist}
+Version:        1.9.0
+Release:        1%{?dist}
 Summary:        Ocaml bindings to the Xapi API
 License:        LGPL2.1 + OCaml linking exception
 URL:            https://github.com/xapi-project/xen-api-client/
 
 
-Source0: https://code.citrite.net/rest/archive/latest/projects/XSU/repos/xen-api-client/archive?at=v1.7.0&format=tar.gz&prefix=ocaml-xen-api-client-1.7.0#/xen-api-client-1.7.0.tar.gz
+Source0: https://code.citrite.net/rest/archive/latest/projects/XSU/repos/xen-api-client/archive?at=v1.9.0&format=tar.gz&prefix=ocaml-xen-api-client-1.9.0#/xen-api-client-1.9.0.tar.gz
 
 
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/xen-api-client/archive?at=v1.7.0&format=tar.gz&prefix=ocaml-xen-api-client-1.7.0#/xen-api-client-1.7.0.tar.gz) = d0d6fd56749daf06cb7aa674e7785bb41e172aa4
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/xen-api-client/archive?at=v1.9.0&format=tar.gz&prefix=ocaml-xen-api-client-1.9.0#/xen-api-client-1.9.0.tar.gz) = 63357e49b89dcfdca9839823ce6588e4501697d2
 
 
 BuildRequires:  xs-opam-repo
@@ -28,7 +28,7 @@ OCaml bindings to the Xapi API, include support for concurrent
 client using the lwt and async libraries.
 
 %package        devel
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/xen-api-client/archive?at=v1.7.0&format=tar.gz&prefix=ocaml-xen-api-client-1.7.0#/xen-api-client-1.7.0.tar.gz) = d0d6fd56749daf06cb7aa674e7785bb41e172aa4
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/xen-api-client/archive?at=v1.9.0&format=tar.gz&prefix=ocaml-xen-api-client-1.9.0#/xen-api-client-1.9.0.tar.gz) = 63357e49b89dcfdca9839823ce6588e4501697d2
 Summary:        Development files for %{name}
 Requires:       %{name} = %{version}-%{release}
 Requires:       xs-opam-repo
@@ -100,6 +100,13 @@ make DESTDIR=%{buildroot} install
 %{ocaml_libdir}/xen-api-client-async/*.ml*
 
 %changelog
+* Mon May 04 2020 Christian Lindig <christian.lindig@citrix.com> - 1.9.0-1
+- maintenance: update opam dependencies
+
+* Wed Feb 12 2020 Christian Lindig <christian.lindig@citrix.com> - 1.8.0-1
+- CP-32846 drop legacy ssl support
+- maintenance: fix travis build
+
 * Fri Aug 23 2019 Edwin Török <edvin.torok@citrix.com> - 1.7.0-3
 - bump packages after xs-opam update
 

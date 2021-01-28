@@ -2,7 +2,7 @@
 
 Name:           ocaml-xen-api-client
 Version:        1.9.0
-Release:        3%{?dist}
+Release:        3.0.ipv6.1%{?dist}
 Summary:        Ocaml bindings to the Xapi API
 License:        LGPL2.1 + OCaml linking exception
 URL:            https://github.com/xapi-project/xen-api-client/
@@ -13,6 +13,8 @@ Source0: https://code.citrite.net/rest/archive/latest/projects/XSU/repos/xen-api
 
 Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/xen-api-client/archive?at=v1.9.0&format=tar.gz&prefix=ocaml-xen-api-client-1.9.0#/xen-api-client-1.9.0.tar.gz) = 63357e49b89dcfdca9839823ce6588e4501697d2
 
+# XCP-ng specific sources and patches
+Patch1000: xen-api-client-1.9.0-handle-ipv6.patch
 
 BuildRequires:  xs-opam-repo
 BuildRequires:  ocaml-xcp-idl-devel
@@ -100,6 +102,9 @@ make DESTDIR=%{buildroot} install
 %{ocaml_libdir}/xen-api-client-async/*.ml*
 
 %changelog
+* Thu Feb 17 2022 Benjamin Reis <benjamin.reis@vates.fr> - 1.9.0-3.0.ipv6.1
+- Add IPv6 patch: xen-api-client-1.9.0-handle-ipv6.patch
+
 * Mon Sep 27 2021 Pau Ruiz Safont <pau.safont@citrix.com> - 1.9.0-3
 - Bump package after xs-opam update
 

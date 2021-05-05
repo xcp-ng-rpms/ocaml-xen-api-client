@@ -2,7 +2,7 @@
 
 Name:           ocaml-xen-api-client
 Version:        1.9.0
-Release:        1.0.ipv6.1%{?dist}
+Release:        1.0.ipv6.2%{?dist}
 Summary:        Ocaml bindings to the Xapi API
 License:        LGPL2.1 + OCaml linking exception
 URL:            https://github.com/xapi-project/xen-api-client/
@@ -102,6 +102,9 @@ make DESTDIR=%{buildroot} install
 %{ocaml_libdir}/xen-api-client-async/*.ml*
 
 %changelog
+* Fri Apr 30 2021 Benjamin Reis <benjamin.reis@vates.fr> - 1.9.0-1.0.ipv6.2
+- Update xen-api-client-1.9.0-handle-ipv6.patch to be aligned with upstream merge
+
 * Fri Jan 29 2021 Benjamin Reis <benjamin.reis@vates.fr> - 1.9.0-1.0.ipv6.1
 - Add IPv6 patch: xen-api-client-1.9.0-handle-ipv6.patch
 

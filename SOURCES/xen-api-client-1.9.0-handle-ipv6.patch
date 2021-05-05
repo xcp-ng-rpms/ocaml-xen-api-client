@@ -1,9 +1,9 @@
-diff --git c/lwt/disk.ml w/lwt/disk.ml
-index 5a908fd..2539e3b 100644
---- c/lwt/disk.ml
-+++ w/lwt/disk.ml
-@@ -37,7 +37,8 @@ let uri ~pool ~authentication ~vdi =
- 
+diff --git a/lwt/disk.ml b/lwt/disk.ml
+index 5a908fd..e67f2f3 100644
+--- a/lwt/disk.ml
++++ b/lwt/disk.ml
+@@ -37,20 +37,13 @@ let uri ~pool ~authentication ~vdi =
+
  let socket sockaddr =
    let family = match sockaddr with
 -    | Lwt_unix.ADDR_INET(_, _) -> Unix.PF_INET
@@ -11,61 +11,112 @@ index 5a908fd..2539e3b 100644
 +      Unix.domain_of_sockaddr sockaddr
      | Lwt_unix.ADDR_UNIX _ -> Unix.PF_UNIX in
    Lwt_unix.socket family Unix.SOCK_STREAM 0
- 
-@@ -48,9 +49,12 @@ let start_upload ~chunked ~uri =
-     | x -> failwith (Printf.sprintf "Unsupported URI scheme: %s" (match x with None -> "None" | Some x -> x)) in
-   let port = match Uri.port uri with None -> (if use_ssl then 443 else 80) | Some port -> port in
-   let host = match Uri.host uri with None -> failwith "Please supply a host in the URI" | Some host -> host in
+
+ let start_upload ~chunked ~uri =
+-  let use_ssl = match Uri.scheme uri with
+-    | Some "https" -> true
+-    | Some "http" -> false
+-    | x -> failwith (Printf.sprintf "Unsupported URI scheme: %s" (match x with None -> "None" | Some x -> x)) in
+-  let port = match Uri.port uri with None -> (if use_ssl then 443 else 80) | Some port -> port in
+-  let host = match Uri.host uri with None -> failwith "Please supply a host in the URI" | Some host -> host in
 -
 -  Lwt_unix.gethostbyname host >>= fun host_entry ->
 -  let sockaddr = Lwt_unix.ADDR_INET(host_entry.Lwt_unix.h_addr_list.(0), port) in
-+  let host = Scanf.ksscanf host (fun _ _ -> host) "[%s@]" Fun.id in
-+  Lwt_unix.getaddrinfo host (string_of_int port) [] >>= fun he ->
-+  let sockaddr = match he with
-+  | [] -> raise Not_found
-+  | addrinfo :: _ -> addrinfo.Unix.ai_addr
-+  in
++  Util.sockaddr_of_uri uri >>= fun (sockaddr, use_ssl) ->
    let sock = socket sockaddr in
    Lwt.catch (fun () ->
       Lwt_unix.connect sock sockaddr
-@@ -89,4 +93,3 @@ let start_upload ~chunked ~uri =
+@@ -89,4 +82,3 @@ let start_upload ~chunked ~uri =
        then return c
        else fail (Failure (Code.reason_phrase_of_code code))
    end
 -
-diff --git c/lwt/xen_api_lwt_unix.ml w/lwt/xen_api_lwt_unix.ml
-index 5fd1768..eda1429 100644
---- c/lwt/xen_api_lwt_unix.ml
-+++ w/lwt/xen_api_lwt_unix.ml
-@@ -62,12 +62,17 @@ module Lwt_unix_IO = struct
+diff --git a/lwt/util.ml b/lwt/util.ml
+new file mode 100644
+index 0000000..285722b
+--- /dev/null
++++ b/lwt/util.ml
+@@ -0,0 +1,39 @@
++open Xen_api
++open Lwt
++
++let is_ssl ?(allow_file=true) uri =
++  match Uri.scheme uri with
++  | Some "https" ->
++    true
++  | Some "http" ->
++    false
++  | Some "file" when allow_file ->
++    false
++  | x ->
++    failwith (Printf.sprintf "Unsupported URI scheme: %s" (match x with None -> "None" | Some x -> x))
++
++let sockaddr_of_uri uri =
++  let use_ssl = is_ssl ~allow_file:false uri in
++  let port =
++    match Uri.port uri with
++    | None when use_ssl ->
++      443
++    | None ->
++      80
++    | Some port ->
++      port
++  in
++  let host =
++    match Uri.host uri with
++    | None ->
++      failwith "Please supply a host in the URI"
++    | Some host ->
++      Scanf.ksscanf host (fun _ _ -> host) "[%s@]" Fun.id
++  in
++  Lwt.catch (fun () ->
++    Lwt_unix.getaddrinfo host (string_of_int port) [] >|= function
++      | [] ->
++        raise Not_found
++      | addrinfo :: _ ->
++        ( addrinfo.Unix.ai_addr, use_ssl) )
++    (fun _ ->  fail (Failed_to_resolve_hostname host))
+diff --git a/lwt/xen_api_lwt_unix.ml b/lwt/xen_api_lwt_unix.ml
+index 5fd1768..386458a 100644
+--- a/lwt/xen_api_lwt_unix.ml
++++ b/lwt/xen_api_lwt_unix.ml
+@@ -62,30 +62,13 @@ module Lwt_unix_IO = struct
      Ssl.create_context Ssl.TLSv1_2 Ssl.Client_context
- 
+
    let open_connection uri =
 -    let domain_addr_t = match Uri.host uri with
-+    let domain_addr_t port = match Uri.host uri with
-       | Some host ->
-         Lwt.catch
-           (fun () ->
+-      | Some host ->
+-        Lwt.catch
+-          (fun () ->
 -             Lwt_unix.gethostbyname host >>= fun host_entry ->
 -             return (host_entry.Lwt_unix.h_addrtype, host_entry.Lwt_unix.h_addr_list.(0)))
-+             let host = Scanf.ksscanf host (fun _ _ -> host) "[%s@]" Fun.id in
-+             Lwt_unix.getaddrinfo host (string_of_int port) [] >>= fun he ->
-+             let sockaddr = match he with
-+             | [] -> raise Not_found
-+             | addrinfo :: _ -> addrinfo.Unix.ai_addr
-+             in
-+             return ((Unix.domain_of_sockaddr sockaddr), sockaddr))
-           (fun _ -> fail (Failed_to_resolve_hostname host))
-       | None -> fail (Failed_to_resolve_hostname "") in
+-          (fun _ -> fail (Failed_to_resolve_hostname host))
+-      | None -> fail (Failed_to_resolve_hostname "") in
+-    (match Uri.scheme uri with
+-     | Some "http" -> return false
+-     | Some "https" -> return true
+-     | Some "file" -> return false
+-     | Some x -> fail (Unsupported_scheme x)
+-     | None -> fail (Unsupported_scheme "")) >>= fun ssl ->
+-    let port = match Uri.port uri with
+-      | Some x -> x
+-      | None -> if ssl then 443 else 80 in
      (match Uri.scheme uri with
-@@ -83,8 +88,8 @@ module Lwt_unix_IO = struct
       | Some "file" ->
-        return (Unix.PF_UNIX, Unix.ADDR_UNIX (Uri.path uri))
+-       return (Unix.PF_UNIX, Unix.ADDR_UNIX (Uri.path uri))
++       return (Unix.PF_UNIX, Unix.ADDR_UNIX (Uri.path uri), false)
       | Some "http" | Some "https" ->
 -       domain_addr_t >>= fun (domain, addr) ->
 -       return (domain, Unix.ADDR_INET(addr, port))
-+       domain_addr_t port >>= fun (domain, sockaddr) ->
-+       return (domain, sockaddr)
-      | _ -> assert false) >>= fun (domain, sockaddr) ->
- 
+-     | _ -> assert false) >>= fun (domain, sockaddr) ->
++      Util.sockaddr_of_uri uri >|= fun (sockaddr, ssl) -> ((Unix.domain_of_sockaddr sockaddr), sockaddr, ssl)
++     | Some x -> fail (Unsupported_scheme x)
++     | None -> fail (Unsupported_scheme "")) >>= fun (domain, sockaddr, ssl) ->
+
      if ssl then begin
+       let fd = Lwt_unix.socket domain Unix.SOCK_STREAM 0 in
+@@ -159,4 +142,3 @@ let make_json ?(timeout=30.) uri call =
+
+ module Client = Client.ClientF(Lwt)
+ include Client
+-

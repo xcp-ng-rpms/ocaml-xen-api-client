@@ -2,7 +2,7 @@
 
 Name:           ocaml-xen-api-client
 Version:        1.9.0
-Release:        1%{?dist}
+Release:        3%{?dist}
 Summary:        Ocaml bindings to the Xapi API
 License:        LGPL2.1 + OCaml linking exception
 URL:            https://github.com/xapi-project/xen-api-client/
@@ -100,6 +100,12 @@ make DESTDIR=%{buildroot} install
 %{ocaml_libdir}/xen-api-client-async/*.ml*
 
 %changelog
+* Mon Sep 27 2021 Pau Ruiz Safont <pau.safont@citrix.com> - 1.9.0-3
+- Bump package after xs-opam update
+
+* Tue Jul 13 2021 Edwin Török <edvin.torok@citrix.com> - 1.9.0-2
+- bump packages after xs-opam update
+
 * Mon May 04 2020 Christian Lindig <christian.lindig@citrix.com> - 1.9.0-1
 - maintenance: update opam dependencies
 

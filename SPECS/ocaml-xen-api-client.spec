@@ -1,34 +1,27 @@
+%global package_speccommit 98f098b91a1c8affc7861beb7edde2c212d11ce0
+%global package_srccommit v1.9.0
 %define debug_package %{nil}
 
 Name:           ocaml-xen-api-client
-Version:        1.9.0
-Release:        3%{?dist}
+Version: 1.9.0
+Release: 5%{?xsrel}%{?dist}
 Summary:        Ocaml bindings to the Xapi API
-License:        LGPL2.1 + OCaml linking exception
+License:        LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception
 URL:            https://github.com/xapi-project/xen-api-client/
 
-
-Source0: https://code.citrite.net/rest/archive/latest/projects/XSU/repos/xen-api-client/archive?at=v1.9.0&format=tar.gz&prefix=ocaml-xen-api-client-1.9.0#/xen-api-client-1.9.0.tar.gz
-
-
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/xen-api-client/archive?at=v1.9.0&format=tar.gz&prefix=ocaml-xen-api-client-1.9.0#/xen-api-client-1.9.0.tar.gz) = 63357e49b89dcfdca9839823ce6588e4501697d2
-
+Source0: xen-api-client-1.9.0.tar.gz
 
 BuildRequires:  xs-opam-repo
 BuildRequires:  ocaml-xcp-idl-devel
-BuildRequires:  xen-dom0-libs-devel
+BuildRequires:  xen-ocaml-devel
 BuildRequires:  xapi-client-devel
 Requires:       ocaml
-
-%global _use_internal_dependency_generator 0
-%global __requires_exclude *caml*
 
 %description
 OCaml bindings to the Xapi API, include support for concurrent
 client using the lwt and async libraries.
 
 %package        devel
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/xen-api-client/archive?at=v1.9.0&format=tar.gz&prefix=ocaml-xen-api-client-1.9.0#/xen-api-client-1.9.0.tar.gz) = 63357e49b89dcfdca9839823ce6588e4501697d2
 Summary:        Development files for %{name}
 Requires:       %{name} = %{version}-%{release}
 Requires:       xs-opam-repo
@@ -100,6 +93,14 @@ make DESTDIR=%{buildroot} install
 %{ocaml_libdir}/xen-api-client-async/*.ml*
 
 %changelog
+* Tue Feb 28 2023 Pau Ruiz Safont <pau.ruizsafont@cloud.com> - 1.9.0-5
+- Change license to be a valid SPDX identifier
+- Fix xen BuildReqs
+- Remove macro for dependency generator
+
+* Mon Feb 20 2023 Pau Ruiz Safont <pau.ruizsafont@cloud.com> - 1.9.0-4
+- Bump to avoid conflict with existing version tag in repo
+
 * Mon Sep 27 2021 Pau Ruiz Safont <pau.safont@citrix.com> - 1.9.0-3
 - Bump package after xs-opam update
 

@@ -1,10 +1,10 @@
-%global package_speccommit 98f098b91a1c8affc7861beb7edde2c212d11ce0
+%global package_speccommit 1e36940da0bcfbb67bfa781174a4bd151024467c
 %global package_srccommit v1.9.0
 %define debug_package %{nil}
 
 Name:           ocaml-xen-api-client
 Version: 1.9.0
-Release: 5%{?xsrel}%{?dist}
+Release: 10%{?xsrel}%{?dist}
 Summary:        Ocaml bindings to the Xapi API
 License:        LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception
 URL:            https://github.com/xapi-project/xen-api-client/
@@ -93,6 +93,21 @@ make DESTDIR=%{buildroot} install
 %{ocaml_libdir}/xen-api-client-async/*.ml*
 
 %changelog
+* Thu Jul 20 2023 Rob Hoes <rob.hoes@citrix.com> - 1.9.0-10
+- Bump release and rebuild
+
+* Mon Jun 19 2023 Christian Lindig <christian.lindig@citrix.com> - 1.9.0-9
+- Bump release and rebuild
+
+* Thu Jun 08 2023 Christian Lindig <christian.lindig@citrix.com> - 1.9.0-8
+- Bump release and rebuild
+
+* Fri May 12 2023 Christian Lindig <christian.lindig@citrix.com> - 1.9.0-7
+- Bump release and rebuild
+
+* Fri May 12 2023 Christian Lindig <christian.lindig@citrix.com> - 1.9.0-6
+- Bump release and rebuild
+
 * Tue Feb 28 2023 Pau Ruiz Safont <pau.ruizsafont@cloud.com> - 1.9.0-5
 - Change license to be a valid SPDX identifier
 - Fix xen BuildReqs

@@ -1,10 +1,10 @@
-%global package_speccommit 1e36940da0bcfbb67bfa781174a4bd151024467c
+%global package_speccommit ba2c3a7c213d392fef4c08c065a1b08d5b88a523
 %global package_srccommit v1.9.0
 %define debug_package %{nil}
 
 Name:           ocaml-xen-api-client
 Version: 1.9.0
-Release: 10%{?xsrel}%{?dist}
+Release: 11%{?xsrel}%{?dist}
 Summary:        Ocaml bindings to the Xapi API
 License:        LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception
 URL:            https://github.com/xapi-project/xen-api-client/
@@ -93,6 +93,9 @@ make DESTDIR=%{buildroot} install
 %{ocaml_libdir}/xen-api-client-async/*.ml*
 
 %changelog
+* Mon Oct 02 2023 Pau Ruiz Safont <pau.ruizsafont@cloud.com> - 1.9.0-11
+- Bump release and rebuild
+
 * Thu Jul 20 2023 Rob Hoes <rob.hoes@citrix.com> - 1.9.0-10
 - Bump release and rebuild
 

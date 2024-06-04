@@ -1,10 +1,10 @@
-%global package_speccommit ba2c3a7c213d392fef4c08c065a1b08d5b88a523
+%global package_speccommit c955bc07d076cb6c9d6879d04dbf6ddb40481dff
 %global package_srccommit v1.9.0
 %define debug_package %{nil}
 
 Name:           ocaml-xen-api-client
 Version: 1.9.0
-Release: 11%{?xsrel}%{?dist}
+Release: 18%{?xsrel}%{?dist}
 Summary:        Ocaml bindings to the Xapi API
 License:        LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception
 URL:            https://github.com/xapi-project/xen-api-client/
@@ -93,6 +93,27 @@ make DESTDIR=%{buildroot} install
 %{ocaml_libdir}/xen-api-client-async/*.ml*
 
 %changelog
+* Fri Mar 08 2024 Christian Lindig <christian.lindig@cloud.com> - 1.9.0-18
+- Bump release and rebuild
+
+* Wed Mar 06 2024 Christian Lindig <christian.lindig@cloud.com> - 1.9.0-17
+- Bump release and rebuild
+
+* Tue Mar 05 2024 Christian Lindig <christian.lindig@cloud.com> - 1.9.0-16
+- Bump release and rebuild
+
+* Fri Nov 03 2023 Christian Lindig <christian.lindig@cloud.com> - 1.9.0-15
+- Bump release and rebuild
+
+* Tue Oct 24 2023 Christian Lindig <christian.lindig@cloud.com> - 1.9.0-14
+- Bump release and rebuild
+
+* Tue Oct 24 2023 Christian Lindig <christian.lindig@cloud.com> - 1.9.0-13
+- Bump release and rebuild
+
+* Wed Oct 18 2023 Christian Lindig <christian.lindig@cloud.com> - 1.9.0-12
+- Bump release and rebuild
+
 * Mon Oct 02 2023 Pau Ruiz Safont <pau.ruizsafont@cloud.com> - 1.9.0-11
 - Bump release and rebuild
 
